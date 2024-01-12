@@ -97,10 +97,6 @@ void SetMap(void) {
 		for (int j = 0; j < mapSize; j++)
 			backupMap[i][j] = map[i][j];*/
 
-
-	//for (int i = 0; i < mapSize; i++)
-	//	free(map[i]);
-	//free(map);
 }
 
 int** RollingArray(int MapArr[25][25], int num, int block) {
