@@ -19,7 +19,19 @@ int** RollingArray(int MapArr[25][25], int num, int block);
 void PrintMap(int PosX, int PosY);
 void PlayerMove(int* PosX, int* PosY, int Key);
 
+int Record[10] = { 0 }, timer = 0, timerCpy = 0; //이건 기록 저장을 위해 필요하다
+
+int LevelSuccess(void);
+void SaveRec(void);
+int GameOver(void);
+unsigned WINAPI CounterTimer(void* arg);
+char** addFile(char** string, int size, int length, char* msg);
+
+
 void GamePlay(void) {//game.cpp에서 main정도의 역할임
+
+Restart:
+
 	int PosX = 1, PosY = 1, NowLevel = level;
 	char title[40] = { 0 };
 
@@ -27,7 +39,7 @@ void GamePlay(void) {//game.cpp에서 main정도의 역할임
 	system(title);
 	system("mode con: cols=100 lines=50");
 	SetMap();
-	while (true) 
+	while (NowLevel == level)
 	{
 		if (GetAsyncKeyState(VK_UP))
 			PlayerMove(&PosX, &PosY, VK_UP);
@@ -37,12 +49,42 @@ void GamePlay(void) {//game.cpp에서 main정도의 역할임
 			PlayerMove(&PosX, &PosY, VK_LEFT);
 		else if (GetAsyncKeyState(VK_RIGHT))
 			PlayerMove(&PosX, &PosY, VK_RIGHT);
+		else if (GetAsyncKeyState('R')) {
+
+			for (int i = 0; i < mapSize; i++) {
+				free(map[i]);
+				free(backupMap[i]);
+			}
+			free(map);
+			free(backupMap);
+			//GetExitCodeThread(CountTimer, NULL); 아직 구현하지 않았다.
+			goto Restart;
+			return;
+		}
+
 		PrintMap(PosX, PosY);
 		Sleep(1);
 	}
+	while (true) {
+		switch (LevelSuccess()) {
+		case 0:
+			for (int i = 0; i < mapSize; i++) {
+				free(map[i]);
+				free(backupMap[i]);
+			}
+			free(map);
+			free(backupMap);
+			return;
+			break;
 
-	for (int i = 0; i < mapSize; i++)
-		free(map[i]);
+		}
+
+
+
+
+	}
+
+
 	free(map);
 
 	return;
@@ -79,11 +121,11 @@ void SetMap(void) {
 		}
 	}
 
-	for (int i = 0; i < mapSize; i++){
+	for (int i = 0; i < mapSize; i++) {
 		map[i][0] = WALL;
 		map[0][i] = WALL;
-		map[i][mapSize-1] = WALL;
-		map[mapSize-1][i] = WALL;
+		map[i][mapSize - 1] = WALL;
+		map[mapSize - 1][i] = WALL;
 	}
 
 	map[mapSize - 2][mapSize - 2] = FINISH;
@@ -91,7 +133,7 @@ void SetMap(void) {
 
 	//추후 아이템 같은 이벤트를 처리할 때 사용
 	/*backupMap = (int**)malloc(sizeof(int*) * mapSize);
-	for (int i = 0; i < mapSize; i++) 
+	for (int i = 0; i < mapSize; i++)
 		backupMap[i] = (int*)malloc(sizeof(int) * mapSize);
 	for (int i = 0; i < mapSize; i++)
 		for (int j = 0; j < mapSize; j++)
@@ -110,8 +152,8 @@ int** RollingArray(int MapArr[25][25], int num, int block) {
 		int tempArr[RMS][RMS] = { 0 };/*이거 결국 한번도 안쓰는데 왜 선언함... ?*/
 
 		//이게 배열을 오른쪽으로 90도 돌리는 알고리즘
-		for (int ii = 0; ii < RMS; ii++){
-			for (int j1 = RMS -1,j2=0; j2 < RMS; j1--,j2++){
+		for (int ii = 0; ii < RMS; ii++) {
+			for (int j1 = RMS - 1, j2 = 0; j2 < RMS; j1--, j2++) {
 				arr[ii][j2] = MapArr[j1][ii];
 			}
 		}
@@ -119,7 +161,7 @@ int** RollingArray(int MapArr[25][25], int num, int block) {
 
 	//원본은 그대로
 	if (num == 0) {
-		for (int i = 0; i < RMS; i++){
+		for (int i = 0; i < RMS; i++) {
 			for (int j = 0; j < RMS; j++) {
 				arr[i][j] = MapArr[j][i];
 			}
@@ -128,14 +170,14 @@ int** RollingArray(int MapArr[25][25], int num, int block) {
 
 	//랜덤으로 8개의 입구를 막기 위한 코드
 	bool check[8] = { 0 };//모두 flase 상태로 초기화
-	for (int i = 0; i < block; i++){/*막기를 6곳만 해주면 될거 같은데 출구 입구 제외 왜 0~4 즉 5개이지... ?*/
+	for (int i = 0; i < block; i++) {/*막기를 6곳만 해주면 될거 같은데 출구 입구 제외 왜 0~4 즉 5개이지... ?*/
 		//정사각형 4개를 붙이면 3개의 접착면이 필요하다!!!
 
 		srand((unsigned)time(NULL) * (i + i));/*(i+i)를 없애도 랜덤 시드가 들어가지 않나?*/
 		int random = rand() % 8;
 
 		//check[]이 true 이면 flase를 찾게 하는 반복문
-		for (int i = 0;check[random]; i++){
+		for (int i = 0; check[random]; i++) {
 			if (i > 1000) {/*이거 굳이 필요했을까...? 시행횟수를 늘리는 것은 이해하는데 그냥 무한 반복 시키고나 더 작은 수로 굳이 1000?*/
 				for (int j = 0; j < 8; j++) {
 					if (check[j] == false) {
@@ -146,33 +188,33 @@ int** RollingArray(int MapArr[25][25], int num, int block) {
 			}
 			else random = rand() % 8;
 		}
-	
+
 		check[random] = true;
-		switch (random){
-			case 0:
-				arr[1][0] = WALL;
-				break;
-			case 1:
-				arr[0][1] = WALL;
-				break;
-			case 2:
-				arr[0][RMS - 2] = WALL;
-				break;
-			case 3:
-				arr[1][RMS - 1] = WALL;
-				break;
-			case 4:
-				arr[RMS - 2][0] = WALL;
-				break;
-			case 5:
-				arr[RMS - 1][1] = WALL;
-				break;
-			case 6:
-				arr[RMS - 2][RMS - 1] = WALL;
-				break;
-			case 7:
-				arr[RMS - 1][RMS - 2] = WALL;
-				break;
+		switch (random) {
+		case 0:
+			arr[1][0] = WALL;
+			break;
+		case 1:
+			arr[0][1] = WALL;
+			break;
+		case 2:
+			arr[0][RMS - 2] = WALL;
+			break;
+		case 3:
+			arr[1][RMS - 1] = WALL;
+			break;
+		case 4:
+			arr[RMS - 2][0] = WALL;
+			break;
+		case 5:
+			arr[RMS - 1][1] = WALL;
+			break;
+		case 6:
+			arr[RMS - 2][RMS - 1] = WALL;
+			break;
+		case 7:
+			arr[RMS - 1][RMS - 2] = WALL;
+			break;
 		}
 	}
 
@@ -219,5 +261,7 @@ void PlayerMove(int* PosX, int* PosY, int Key) {
 	case VK_RIGHT: if (map[*PosY][*PosX + 1] != WALL) { map[*PosY][*PosX] = SPACE; *PosX += 1; } break;
 	}
 	map[*PosY][*PosX] = PLAYER;
+
+	if (backupMap[*PosY][*PosX] == FINISH) level += 1;
 	return;
 }

@@ -1,6 +1,6 @@
 ﻿  game.cpp
+D:\GitHub\Project-C\C.Game.Maze\game.cpp(29,2): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
   main.cpp
-D:\GitHub\Project-C\C.Game.Maze\game.cpp(26,2): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
 D:\GitHub\Project-C\C.Game.Maze\main.cpp(26,16): warning C4838: 'int'에서 'SHORT'(으)로의 변환에는 축소 변환이 필요합니다.
 D:\GitHub\Project-C\C.Game.Maze\main.cpp(26,18): warning C4838: 'int'에서 'SHORT'(으)로의 변환에는 축소 변환이 필요합니다.
   mainprint.cpp
