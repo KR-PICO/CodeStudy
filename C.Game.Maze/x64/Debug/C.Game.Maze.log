@@ -1,8 +1,11 @@
 ﻿  game.cpp
-D:\GitHub\Project-C\C.Game.Maze\game.cpp(29,2): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+D:\Github\Project-C\C.Game.Maze\game.cpp(22,25): error C2374: 'timer': 재정의. 여러 번 초기화했습니다.
+  D:\Github\Project-C\C.Game.Maze\game.cpp(15,16):
+  'timer' 선언을 참조하십시오.
+  
+D:\Github\Project-C\C.Game.Maze\game.cpp(38,2): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
   main.cpp
-D:\GitHub\Project-C\C.Game.Maze\main.cpp(26,16): warning C4838: 'int'에서 'SHORT'(으)로의 변환에는 축소 변환이 필요합니다.
-D:\GitHub\Project-C\C.Game.Maze\main.cpp(26,18): warning C4838: 'int'에서 'SHORT'(으)로의 변환에는 축소 변환이 필요합니다.
+D:\Github\Project-C\C.Game.Maze\main.cpp(26,16): warning C4838: 'int'에서 'SHORT'(으)로의 변환에는 축소 변환이 필요합니다.
+D:\Github\Project-C\C.Game.Maze\main.cpp(26,18): warning C4838: 'int'에서 'SHORT'(으)로의 변환에는 축소 변환이 필요합니다.
   mainprint.cpp
   코드를 생성하고 있습니다...
-  C.Game.Maze.vcxproj -> D:\GitHub\Project-C\C.Game.Maze\x64\Debug\C.Game.Maze.exe
